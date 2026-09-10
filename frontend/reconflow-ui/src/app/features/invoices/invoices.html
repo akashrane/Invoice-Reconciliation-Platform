@@ -1,0 +1,21 @@
+<div class="page-header"><div><h1>Invoices</h1><p>Track issued invoices and their settlement status.</p></div><div class="actions"><button class="button" (click)="showCustomerForm=!showCustomerForm">+ Customer</button><button class="button primary" (click)="showInvoiceForm=!showInvoiceForm">+ New invoice</button></div></div>
+@if (error()) { <div class="error-banner">{{ error() }}</div> } @if (success()) { <div class="success-banner">{{ success() }}</div> }
+@if (showInvoiceForm || showCustomerForm) { <div class="forms-row">
+  @if (showInvoiceForm) { <form class="card panel-form" (ngSubmit)="saveInvoice()" #invoiceForm="ngForm"><h3>Create invoice</h3><div class="form-grid">
+    <div class="field"><label>Invoice number</label><input name="invoiceNumber" [(ngModel)]="invoice.invoiceNumber" required placeholder="INV-401" /></div>
+    <div class="field"><label>Customer</label><select name="customerId" [(ngModel)]="invoice.customerId" required><option value="">Select customer</option>@for (customer of customers(); track customer.id) { <option [value]="customer.id">{{ customer.name }}</option> }</select></div>
+    <div class="field"><label>Amount</label><input name="amount" [(ngModel)]="invoice.amount" type="number" min="0.01" step="0.01" required /></div>
+    <div class="field"><label>Status</label><select name="status" [(ngModel)]="invoice.status"><option>Open</option><option>Overdue</option></select></div>
+    <div class="field"><label>Issue date</label><input name="issueDate" [(ngModel)]="invoice.issueDate" type="date" required /></div>
+    <div class="field"><label>Due date</label><input name="dueDate" [(ngModel)]="invoice.dueDate" type="date" required /></div>
+  </div><div class="form-actions"><button type="button" class="button" (click)="showInvoiceForm=false">Cancel</button><button class="button primary" [disabled]="invoiceForm.invalid">Create invoice</button></div></form> }
+  @if (showCustomerForm) { <form class="card panel-form" (ngSubmit)="saveCustomer()" #customerForm="ngForm"><h3>Add customer</h3><div class="form-grid customer-grid">
+    <div class="field"><label>Company name</label><input name="name" [(ngModel)]="customer.name" required /></div><div class="field"><label>Account email</label><input name="email" [(ngModel)]="customer.email" type="email" required /></div><div class="field"><label>Account reference</label><input name="reference" [(ngModel)]="customer.accountReference" required /></div>
+  </div><div class="form-actions"><button type="button" class="button" (click)="showCustomerForm=false">Cancel</button><button class="button primary" [disabled]="customerForm.invalid">Add customer</button></div></form> }
+</div> }
+<section class="card"><div class="toolbar"><div class="search"><input [(ngModel)]="search" placeholder="Search invoice or customer" /></div><select [(ngModel)]="status"><option value="">All statuses</option><option>Open</option><option>Paid</option><option>Overdue</option></select></div>
+  @if (loading()) { <div class="loading"></div> }<div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Customer</th><th>Amount</th><th>Issue date</th><th>Due date</th><th>Status</th></tr></thead><tbody>
+    @for (item of visible(); track item.id) { <tr><td><strong>{{ item.invoiceNumber }}</strong></td><td>{{ item.customerName }}</td><td class="money">{{ item.amount | currency }}</td><td>{{ item.issueDate | date:'MMM d, y' }}</td><td>{{ item.dueDate | date:'MMM d, y' }}</td><td><span class="badge {{ item.status.toLowerCase() }}">{{ item.status }}</span></td></tr> }
+    @if (!loading() && visible().length === 0) { <tr><td colspan="6"><div class="empty-state"><strong>No invoices found</strong>Adjust your filters or create a new invoice.</div></td></tr> }
+  </tbody></table></div>
+</section>
