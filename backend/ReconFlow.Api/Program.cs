@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ReconFlow.Api.Middleware;
 using ReconFlow.Application.Abstractions;
 using ReconFlow.Application.Services;
+using ReconFlow.Core.Services;
 using ReconFlow.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,8 @@ builder.Services.AddScoped<IReconFlowDbContext>(provider => provider.GetRequired
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<InvoiceService>();
 builder.Services.AddScoped<PaymentService>();
+builder.Services.AddScoped<ReconciliationService>();
+builder.Services.AddSingleton<IMatchingRulesEngine, MatchingRulesEngine>();
 
 var app = builder.Build();
 
