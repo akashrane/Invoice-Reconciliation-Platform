@@ -1,0 +1,25 @@
+<main class="login-page">
+  <section class="login-story">
+    <a class="brand"><span>R</span> ReconFlow</a>
+    <div class="story-copy">
+      <p class="eyebrow">FINANCE OPERATIONS, CONTROLLED</p>
+      <h1>Turn payment noise into a clean, auditable close.</h1>
+      <p>Deterministic matching, explainable exceptions, and a complete decision trail for every incoming payment.</p>
+      <div class="trust-row"><span>✓ Rule-based matching</span><span>✓ Manual controls</span><span>✓ Audit ready</span></div>
+    </div>
+    <p class="copyright">© 2026 ReconFlow Finance Systems</p>
+  </section>
+  <section class="login-panel">
+    <form (ngSubmit)="submit()" #form="ngForm">
+      <div class="mobile-brand"><span>R</span> ReconFlow</div>
+      <p class="eyebrow">SECURE WORKSPACE</p>
+      <h2>Welcome back</h2>
+      <p class="muted">Sign in to continue to finance operations.</p>
+      <label>Email address<input name="email" type="email" [(ngModel)]="email" required email autocomplete="email" /></label>
+      <label>Password<input name="password" type="password" [(ngModel)]="password" required autocomplete="current-password" /></label>
+      @if (error()) { <div class="form-error" role="alert">{{ error() }}</div> }
+      <button class="primary-button" [disabled]="form.invalid || loading()">{{ loading() ? 'Signing in…' : 'Sign in to ReconFlow' }}</button>
+      <div class="demo-note"><strong>Demo workspace</strong><span>Credentials are prefilled for local development.</span></div>
+    </form>
+  </section>
+</main>

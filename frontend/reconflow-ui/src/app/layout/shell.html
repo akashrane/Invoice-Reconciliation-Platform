@@ -1,0 +1,26 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/dashboard" aria-label="ReconFlow dashboard">
+      <span class="brand-mark">R</span><span><strong>ReconFlow</strong><small>Finance operations</small></span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a routerLink="/dashboard" routerLinkActive="active"><span>◫</span> Overview</a>
+      <a routerLink="/invoices" routerLinkActive="active"><span>▤</span> Invoices</a>
+      <a routerLink="/payments" routerLinkActive="active"><span>↔</span> Payments</a>
+      <a routerLink="/review" routerLinkActive="active"><span>◇</span> Review queue</a>
+      <a routerLink="/history" routerLinkActive="active"><span>↶</span> Reconciliation history</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-avatar">{{ auth.user()?.email?.charAt(0)?.toUpperCase() }}</div>
+      <div><strong>{{ auth.user()?.email }}</strong><small>{{ auth.user()?.role }}</small></div>
+      <button class="icon-button" (click)="auth.logout()" title="Sign out">↪</button>
+    </div>
+  </aside>
+  <main>
+    <header class="topbar">
+      <div><span class="environment-dot"></span> Live workspace</div>
+      <div class="topbar-right"><span>Last sync: just now</span><span class="notification">●</span></div>
+    </header>
+    <section class="page"><router-outlet /></section>
+  </main>
+</div>

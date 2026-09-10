@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/ReconFlow.Api/ReconFlow.Api.csproj" />
+    <Project Path="backend/ReconFlow.Application/ReconFlow.Application.csproj" />
+    <Project Path="backend/ReconFlow.Core/ReconFlow.Core.csproj" />
+    <Project Path="backend/ReconFlow.Infrastructure/ReconFlow.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ReconFlow.UnitTests/ReconFlow.UnitTests.csproj" />
+  </Folder>
+</Solution>

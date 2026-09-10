@@ -1,0 +1,24 @@
+<div class="page-header"><div><h1>Good morning, Finance</h1><p>Here’s the state of payment reconciliation across your portfolio.</p></div><button class="button" (click)="refresh()">↻ Refresh data</button></div>
+@if (error()) { <div class="error-banner">{{ error() }}</div> }
+@if (loading()) { <div class="loading"></div> }
+<section class="metric-grid" aria-label="Reconciliation metrics">
+  <article class="card metric-card"><div class="label">Open invoices</div><div class="value">{{ openInvoices() }}</div><div class="hint">Awaiting settlement</div></article>
+  <article class="card metric-card"><div class="label">Payments today</div><div class="value">{{ paymentsToday() }}</div><div class="hint">Incoming transactions</div></article>
+  <article class="card metric-card accent"><div class="label">Auto-matched</div><div class="value">{{ count('Matched') }}</div><div class="hint">No intervention needed</div></article>
+  <article class="card metric-card warning"><div class="label">Needs review</div><div class="value">{{ count('Review') }}</div><div class="hint">Action required</div></article>
+  <article class="card metric-card"><div class="label">Unmatched</div><div class="value">{{ count('Unmatched') }}</div><div class="hint">No eligible match</div></article>
+  <article class="card metric-card"><div class="label">Reconciliation rate</div><div class="value">{{ rate() }}%</div><div class="hint">Matched / processed</div></article>
+</section>
+<section class="dashboard-grid">
+  <article class="card recent"><div class="section-heading"><div><h2>Recent reconciliation activity</h2><p>Latest automated and manual decisions</p></div><a href="/history">View all</a></div>
+    <div class="table-wrap"><table><thead><tr><th>Payment</th><th>Customer</th><th>Amount</th><th>Invoice</th><th>Score</th><th>Status</th><th>Processed</th></tr></thead><tbody>
+      @for (item of history().slice(0, 6); track item.id) { <tr><td><strong>{{ item.paymentReference }}</strong></td><td>{{ item.customerName }}</td><td class="money">{{ item.amount | currency }}</td><td>{{ item.invoiceNumber || '—' }}</td><td><strong>{{ item.matchScore }}%</strong></td><td><span class="badge {{ item.matchStatus.toLowerCase() }}">{{ item.matchStatus }}</span></td><td>{{ item.createdAt | date:'MMM d, h:mm a' }}</td></tr> }
+      @if (!loading() && history().length === 0) { <tr><td colspan="7"><div class="empty-state"><strong>No reconciliations yet</strong>Import a payment file to get started.</div></td></tr> }
+    </tbody></table></div>
+  </article>
+  <aside class="card portfolio"><div class="section-heading"><div><h2>Invoice exposure</h2><p>Outstanding by status</p></div></div>
+    <div class="portfolio-total"><span>Outstanding balance</span><strong>{{ outstandingTotal() | currency }}</strong></div>
+    <div class="bar"><i [style.width.%]="openShare()"></i></div>
+    <div class="legend"><span><i class="open-dot"></i>Open <strong>{{ invoiceCount('Open') }}</strong></span><span><i class="late-dot"></i>Overdue <strong>{{ invoiceCount('Overdue') }}</strong></span><span><i class="paid-dot"></i>Paid <strong>{{ invoiceCount('Paid') }}</strong></span></div>
+  </aside>
+</section>

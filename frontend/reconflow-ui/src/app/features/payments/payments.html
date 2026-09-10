@@ -1,0 +1,20 @@
+<div class="page-header"><div><h1>Payments</h1><p>Import incoming transactions and run deterministic matching.</p></div><button class="button primary" (click)="showPaymentForm=!showPaymentForm">+ Add payment</button></div>
+@if (error()) { <div class="error-banner">{{ error() }}</div> } @if (success()) { <div class="success-banner">{{ success() }}</div> }
+<section class="payment-top">
+  <article class="card import-card"><div><p class="eyebrow">CSV PAYMENT IMPORT</p><h2>Bring in a bank transaction file</h2><p>Rows are validated independently, customers resolved, and matching runs automatically.</p></div>
+    <label class="drop-zone"><input type="file" accept=".csv,text/csv" (change)="selectFile($event)" /><span class="upload-icon">⇧</span><strong>{{ selectedFile?.name || 'Choose a CSV file' }}</strong><small>reference, customer, amount, date, description · max 5 MB</small></label>
+    <button class="button primary" [disabled]="!selectedFile || importing()" (click)="upload()">{{ importing() ? 'Processing…' : 'Import and reconcile' }}</button>
+  </article>
+  @if (importResult(); as result) { <article class="card result-card"><p class="eyebrow">IMPORT COMPLETE</p><h2>{{ result.uploaded }} rows processed</h2><div class="result-grid"><span><strong>{{ result.matched }}</strong>Matched</span><span><strong>{{ result.review }}</strong>Review</span><span><strong>{{ result.unmatched }}</strong>Unmatched</span><span><strong>{{ result.failed }}</strong>Failed</span></div>
+    @if (result.errors.length) { <details><summary>View row errors</summary>@for (issue of result.errors; track issue.row) { <p>Row {{ issue.row }} · {{ issue.message }}</p> }</details> }
+  </article> }
+</section>
+@if (showPaymentForm) { <form class="card panel-form payment-form" (ngSubmit)="savePayment()" #paymentForm="ngForm"><h3>Record payment</h3><div class="form-grid">
+  <div class="field"><label>Transaction reference</label><input name="reference" [(ngModel)]="payment.transactionReference" required /></div><div class="field"><label>Customer</label><select name="customer" [(ngModel)]="payment.customerId" required><option value="">Select customer</option>@for (customer of customers(); track customer.id) { <option [value]="customer.id">{{ customer.name }}</option> }</select></div><div class="field"><label>Amount</label><input name="amount" [(ngModel)]="payment.amount" type="number" min="0.01" step="0.01" required /></div><div class="field"><label>Payment date</label><input name="date" [(ngModel)]="payment.paymentDate" type="date" required /></div><div class="field full"><label>Description / remittance text</label><textarea name="description" [(ngModel)]="payment.description" rows="3" required></textarea></div>
+</div><div class="form-actions"><button type="button" class="button" (click)="showPaymentForm=false">Cancel</button><button class="button primary" [disabled]="paymentForm.invalid">Save payment</button></div></form> }
+<section class="card"><div class="toolbar"><div class="search"><input [(ngModel)]="search" placeholder="Search reference, customer, or description" /></div></div>@if (loading()) { <div class="loading"></div> }
+  <div class="table-wrap"><table><thead><tr><th>Reference</th><th>Customer</th><th>Amount</th><th>Payment date</th><th>Description</th><th>Reconciliation</th></tr></thead><tbody>
+    @for (item of visible(); track item.id) { <tr><td><strong>{{ item.transactionReference }}</strong></td><td>{{ item.customerName }}</td><td class="money">{{ item.amount | currency }}</td><td>{{ item.paymentDate | date:'MMM d, y' }}</td><td>{{ item.description }}</td><td>@if (item.isReconciled) { <span class="badge matched">Processed</span> } @else { <button class="button compact" (click)="run(item)">Run match</button> }</td></tr> }
+    @if (!loading() && visible().length === 0) { <tr><td colspan="6"><div class="empty-state"><strong>No payments found</strong>Import a CSV or add a payment.</div></td></tr> }
+  </tbody></table></div>
+</section>
