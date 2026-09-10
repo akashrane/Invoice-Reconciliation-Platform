@@ -21,6 +21,7 @@ builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<InvoiceService>();
 builder.Services.AddScoped<PaymentService>();
 builder.Services.AddScoped<ReconciliationService>();
+builder.Services.AddScoped<CsvPaymentImportService>();
 builder.Services.AddSingleton<IMatchingRulesEngine, MatchingRulesEngine>();
 
 var app = builder.Build();

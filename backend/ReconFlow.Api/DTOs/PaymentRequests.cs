@@ -8,3 +8,9 @@ public sealed record SavePaymentRequest(
     [property: Range(typeof(decimal), "0.01", "9999999999999999")] decimal Amount,
     DateOnly PaymentDate,
     [property: Required, StringLength(500)] string Description);
+
+public sealed class PaymentImportRequest
+{
+    [Required]
+    public required IFormFile File { get; init; }
+}
