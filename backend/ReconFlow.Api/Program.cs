@@ -18,6 +18,7 @@ builder.Services.AddDbContext<ReconFlowDbContext>(options =>
 builder.Services.AddScoped<IReconFlowDbContext>(provider => provider.GetRequiredService<ReconFlowDbContext>());
 builder.Services.AddScoped<CustomerService>();
 builder.Services.AddScoped<InvoiceService>();
+builder.Services.AddScoped<PaymentService>();
 
 var app = builder.Build();
 
