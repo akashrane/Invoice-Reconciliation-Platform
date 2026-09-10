@@ -1,0 +1,9 @@
+<div class="page-header"><div><h1>Reconciliation history</h1><p>Trace every automated result and manual finance decision.</p></div><button class="button" (click)="load()">↻ Refresh</button></div>
+@if (error()) { <div class="error-banner">{{ error() }}</div> }
+<section class="card"><div class="toolbar"><div class="search"><input [(ngModel)]="search" placeholder="Search payment, invoice, or customer" /></div><select [(ngModel)]="status" (change)="load()"><option value="">All outcomes</option><option>Matched</option><option>Review</option><option>Unmatched</option><option>Rejected</option></select></div>
+  @if (loading()) { <div class="loading"></div> }
+  <div class="table-wrap"><table class="history-table"><thead><tr><th>Payment</th><th>Invoice</th><th>Customer</th><th>Amount</th><th>Score</th><th>Status</th><th>Reviewed by</th><th>Timestamp</th></tr></thead><tbody>
+    @for (item of visible(); track item.id) { <tr><td><strong>{{ item.paymentReference }}</strong>@if (item.auditTrail.length) { <span class="audit-detail">{{ item.auditTrail[0].action }} · {{ item.auditTrail[0].reason }}</span> }</td><td>{{ item.invoiceNumber || '—' }}</td><td>{{ item.customerName }}</td><td class="money">{{ item.amount | currency }}</td><td><span class="score">{{ item.matchScore }}%</span></td><td><span class="badge {{ item.matchStatus.toLowerCase() }}">{{ item.matchStatus }}</span></td><td>{{ item.reviewedBy || 'System' }}@if (item.auditTrail.length) { <span class="reviewer">{{ item.auditTrail[0].previousStatus }} → {{ item.auditTrail[0].newStatus }}</span> }</td><td>{{ (item.reviewedAt || item.createdAt) | date:'MMM d, y · h:mm a' }}</td></tr> }
+    @if (!loading() && visible().length === 0) { <tr><td colspan="8"><div class="empty-state"><strong>No history found</strong>No reconciliations match the selected filters.</div></td></tr> }
+  </tbody></table></div>
+</section>

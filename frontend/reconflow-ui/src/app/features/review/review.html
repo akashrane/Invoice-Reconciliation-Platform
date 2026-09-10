@@ -1,0 +1,11 @@
+<div class="page-header"><div><h1>Review queue</h1><p>Resolve uncertain matches with full scoring context.</p></div><span class="queue-count">{{ queue().length }} pending</span></div>
+@if (error()) { <div class="error-banner">{{ error() }}</div> } @if (success()) { <div class="success-banner">{{ success() }}</div> } @if (loading()) { <div class="loading"></div> }
+<section class="review-list">
+  @for (item of queue(); track item.id) { <article class="card review-card">
+    <header><div><span class="badge review">Needs review</span><h2>Payment {{ item.paymentReference }}</h2><p>Received {{ item.createdAt | date:'MMM d, y · h:mm a' }}</p></div><div class="score-ring" [style.--score]="item.matchScore"><strong>{{ item.matchScore }}</strong><small>match score</small></div></header>
+    <div class="comparison"><div><span>Incoming payment</span><dl><dt>Amount</dt><dd>{{ item.amount | currency }}</dd><dt>Customer</dt><dd>{{ item.customerName }}</dd><dt>Reference</dt><dd>{{ item.paymentReference }}</dd></dl></div><div class="arrow">→</div><div><span>Suggested invoice</span><dl><dt>Invoice</dt><dd>{{ item.invoiceNumber || 'No suggestion' }}</dd><dt>Amount</dt><dd>{{ item.amount | currency }}</dd><dt>Customer</dt><dd>{{ item.customerName }}</dd></dl></div></div>
+    <div class="explanation"><h3>Why this needs review</h3>@for (reason of item.reasons; track reason) { <div [class.positive]="positive(reason)"><b>{{ positive(reason) ? '✓' : '×' }}</b><span>{{ reason }}</span></div> }</div>
+    <footer><p>Approval marks the suggested invoice paid and records your identity, timestamp, and reason.</p><div><button class="button danger" [disabled]="working()===item.id" (click)="decide(item,false)">Reject</button><button class="button primary" [disabled]="working()===item.id" (click)="decide(item,true)">Approve match</button></div></footer>
+  </article> }
+  @if (!loading() && queue().length === 0) { <article class="card empty-state review-empty"><span>✓</span><strong>Queue cleared</strong>There are no uncertain payment matches requiring attention.</article> }
+</section>
