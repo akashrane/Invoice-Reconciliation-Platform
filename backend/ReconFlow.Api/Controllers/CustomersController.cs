@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReconFlow.Api.DTOs;
 using ReconFlow.Application.Contracts;
@@ -6,6 +7,7 @@ using ReconFlow.Application.Services;
 namespace ReconFlow.Api.Controllers;
 
 [ApiController]
+[Authorize(Roles = "Analyst,Admin")]
 [Route("api/customers")]
 public sealed class CustomersController(CustomerService service) : ControllerBase
 {
